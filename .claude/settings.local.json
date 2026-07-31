@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "Bash(where python *)",
+      "Bash(where python3 *)",
+      "Bash(where node *)",
+      "Bash(where npx *)",
+      "Bash(py --version)",
+      "Bash(where php *)",
+      "PowerShell(powershell -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\owner\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-owner-Desktop-----\\\\ccdbf2f2-1e29-4c25-be9e-e26d99b23d1a\\\\scratchpad\\\\serve.ps1\")",
+      "Bash(cp \"/c/Users/owner/Desktop/腰痛診断/index.html\" \"/c/Users/owner/AppData/Local/Temp/claude/C--Users-owner-Desktop-----/ccdbf2f2-1e29-4c25-be9e-e26d99b23d1a/scratchpad/index.html\")",
+      "PowerShell(powershell -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\owner\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-owner-Desktop-----\\\\ccdbf2f2-1e29-4c25-be9e-e26d99b23d1a\\\\scratchpad\\\\serve2.ps1\")",
+      "Bash(rm -f \"/c/Users/owner/Desktop/クロード/_preview_test.html\" *)",
+      "Bash(powershell -NoProfile -Command \"Get-NetTCPConnection -LocalPort 8743,8744 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique\")",
+      "Bash(powershell -NoProfile -Command 'Get-CimInstance Win32_Process -Filter \"Name='\\\\''powershell.exe'\\\\''\" | Where-Object { $_.CommandLine -like '\\\\''*serve*.ps1*'\\\\'' } | Select-Object ProcessId, CommandLine')",
+      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 2712,5620 -Force -ErrorAction SilentlyContinue; 'done'\")",
+      "PowerShell(powershell -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\owner\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-owner-Desktop-----\\\\ccdbf2f2-1e29-4c25-be9e-e26d99b23d1a\\\\scratchpad\\\\serve3.ps1\")",
+      "Bash(powershell -NoProfile -Command 'Get-CimInstance Win32_Process -Filter \"Name='\\\\''powershell.exe'\\\\''\" | Where-Object { $_.CommandLine -like '\\\\''*serve3.ps1*'\\\\'' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }; '\\\\''stopped'\\\\''')",
+      "Bash(where npm *)",
+      "Read(//c/Program Files/**)",
+      "Bash(where py *)",
+      "Bash(powershell -NoProfile -Command '$PSVersionTable.PSVersion.Major')"
+    ]
+  }
+}

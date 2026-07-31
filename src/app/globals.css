@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: linear-gradient(180deg, #f4f8fd 0%, #eef3fa 40%, #e7eefb 100%);
+  color: #0b1428;
+  min-height: 100dvh;
+}
+
+* {
+  scrollbar-width: thin;
+}
+
+:focus-visible {
+  outline: 3px solid #478ed3;
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+.bg-star-field {
+  background-image: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.5) 0, transparent 2px),
+    radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.4) 0, transparent 2px),
+    radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.3) 0, transparent 2px),
+    radial-gradient(circle at 90% 15%, rgba(255, 255, 255, 0.4) 0, transparent 2px),
+    radial-gradient(circle at 55% 35%, rgba(255, 255, 255, 0.3) 0, transparent 2px);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+  .print-area {
+    box-shadow: none !important;
+  }
+}

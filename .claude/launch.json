@@ -1,0 +1,22 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "sleep-check-dev",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "set PATH=C:\\Program Files\\nodejs;%PATH% && npm run dev"],
+      "port": 3000
+    },
+    {
+      "name": "static-preview",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "C:\\Users\\owner\\Desktop\\クロード\\.claude\\serve-static.ps1",
+        "-Root", "C:\\Users\\owner\\Desktop\\腰痛診断",
+        "-Port", "8790"
+      ],
+      "port": 8790
+    }
+  ]
+}
