@@ -1,4 +1,4 @@
-import withPWAInit from "@ducanh2912/next-pwa";
+import withPWAInit, { runtimeCaching as defaultCache } from "@ducanh2912/next-pwa";
 
 const withPWA = withPWAInit({
   dest: "public",
@@ -9,6 +9,18 @@ const withPWA = withPWAInit({
   reloadOnOnline: true,
   workboxOptions: {
     disableDevLogs: true,
+    runtimeCaching: [
+      // API・管理画面のデータは常に最新を取得する（診断結果・集計が古いまま表示されるのを防ぐ）
+      {
+        urlPattern: /^\/api\/.*/i,
+        handler: "NetworkOnly",
+      },
+      {
+        urlPattern: /^\/admin(\/.*)?$/i,
+        handler: "NetworkOnly",
+      },
+      ...defaultCache,
+    ],
   },
 });
 
