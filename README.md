@@ -140,8 +140,8 @@ LINE公式アカウントのメッセージにURLを貼り付けるだけで、L
 
 - 管理画面URL: `https://<公開URL>/admin`
 - `.env.local`（Vercelの場合は環境変数）の `ADMIN_PASSWORD` で設定したパスワードでログインします。
-- ダッシュボードでは、回答人数・平均点・年代別・男女比・地域別・睡眠タイプ割合・夜間頻尿割合・
-  平均睡眠時間・予約導線クリック率・LINE誘導クリック率・改善率・月別推移が確認できます。
+- ダッシュボードでは、回答人数・平均点・年代別・男女比・睡眠タイプ割合・夜間頻尿割合・
+  予約導線クリック率・LINE誘導クリック率・改善率・月別推移が確認できます。
   「CSV出力」ボタンから生データをダウンロードできます。
 
 **パスワードを変更する方法:**
@@ -222,14 +222,15 @@ select * from sleep_check_results order by created_at desc;
 
 ## 11. 質問内容の変更方法
 
-質問はすべて [`src/lib/questions.ts`](./src/lib/questions.ts) に集約されています。
+質問はすべて [`src/lib/questions.ts`](./src/lib/questions.ts) に集約されています。全部で7問（プロフィール2問＋症状5問、
+回答時間30秒以内を想定）です。
 
-- プロフィール質問（年代・性別・地域・平均睡眠時間）: `PROFILE_QUESTIONS` を編集
-- 5段階の症状質問（16問）: `LIKERT_QUESTIONS` 配列の `text` を編集、または項目を追加・削除
-  - 各質問は `category`（`quality` / `autonomic` / `stress` / `brain` / `nocturia`）のいずれかに属します
-  - 質問数を大きく変える場合は、カテゴリごとの設問バランスが崩れないよう注意してください
-    （特定のカテゴリだけ質問が極端に少ない/多いと、そのカテゴリのスコアが不安定になります）
-- 5段階の選択肢ラベル（全くない〜ほぼ毎日）: `src/lib/types.ts` の `LIKERT_OPTIONS`
+- プロフィール質問（年代・性別）: `PROFILE_QUESTIONS` を編集
+- 症状質問（はい/いいえの5問）: `SYMPTOM_QUESTIONS` 配列を編集
+  - `text`: 質問文
+  - `weight`: 「いいえ」と回答した場合に総合スコア（100点満点）へ加算される点数。5問の合計が100になるようにしてください
+  - `impact`: 「はい」と回答した場合に、レーダーチャートの5項目（`quality` / `autonomic` / `stress` / `brain` / `nocturia`）
+    からそれぞれ何点減点するか
 
 文言を変更するだけであれば、画面表示・採点処理ともに自動的に反映されます。
 
@@ -241,7 +242,7 @@ select * from sleep_check_results order by created_at desc;
 
 | 変更したい内容 | 編集箇所 |
 |---|---|
-| カテゴリの重要度（総合点への影響度） | `CATEGORY_WEIGHTS`（合計が1.0になるよう調整） |
+| 各設問の配点・レーダーチャートへの影響度 | `src/lib/questions.ts` の `SYMPTOM_QUESTIONS`（`weight` / `impact`） |
 | 総合点の評価帯（90点/80点/50点の切り替え） | `TIER_THRESHOLDS`（`src/lib/constants.ts` の `TIER_COPY` の文言と対応） |
 | 各カテゴリの状態文言・アドバイス文 | `CATEGORY_TEXT` |
 | 問題点ベスト3の言い回し | `PROBLEM_PHRASES` |
@@ -250,6 +251,9 @@ select * from sleep_check_results order by created_at desc;
 
 採点関数 `scoreQuiz()` は入力（プロフィール・回答）から出力（スコア・タイプ等）まで完全に決定的な純粋関数のため、
 値を変えて `npm run dev` で再読み込みするだけで、結果画面にすぐ反映されます。
+
+**総合スコアと5項目レーダーチャートは別々に計算されます。** 総合スコア（100点満点）は5問の `weight` の合計、
+レーダーチャートの5項目は「はい」と回答した設問の `impact` の合計から、それぞれ算出（推定）しています。
 
 ---
 

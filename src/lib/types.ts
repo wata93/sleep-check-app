@@ -10,38 +10,29 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   nocturia: "夜間頻尿リスク",
 };
 
-/** 5段階Likert設問の回答値。0=全くない〜4=ほぼ毎日（高いほど症状が強い） */
-export type LikertValue = 0 | 1 | 2 | 3 | 4;
+/** 症状質問への回答。true = はい（症状あり）, false = いいえ（症状なし） */
+export type YesNo = boolean;
 
-export const LIKERT_OPTIONS: { value: LikertValue; label: string }[] = [
-  { value: 0, label: "全くない" },
-  { value: 1, label: "あまりない" },
-  { value: 2, label: "ときどき" },
-  { value: 3, label: "よくある" },
-  { value: 4, label: "ほぼ毎日" },
+export const YES_NO_OPTIONS: { value: YesNo; label: string }[] = [
+  { value: true, label: "はい" },
+  { value: false, label: "いいえ" },
 ];
 
-export interface LikertQuestion {
+/** カテゴリ推定用の影響度（「はい」と回答した場合に各カテゴリから減点する点数） */
+export type CategoryImpact = Partial<Record<Category, number>>;
+
+export interface SymptomQuestion {
   id: string;
-  type: "likert";
-  category: Category;
+  type: "yesno";
   text: string;
-  /** 総合スコア計算時、このカテゴリ内での相対的な重み（デフォルト1） */
-  weight?: number;
+  /** 総合スコア計算時にこの設問の「いいえ」に配点される点数（5問合計で100点になるよう設計） */
+  weight: number;
+  /** 「はい」と回答した場合の5項目（レーダーチャート）への影響度 */
+  impact: CategoryImpact;
 }
 
 export type AgeBand = "10s" | "20s" | "30s" | "40s" | "50s" | "60s" | "70plus";
 export type Gender = "male" | "female" | "other";
-export type Region =
-  | "hokkaido_tohoku"
-  | "kanto"
-  | "chubu"
-  | "kinki"
-  | "chugoku"
-  | "shikoku"
-  | "kyushu_okinawa"
-  | "unknown";
-export type SleepHoursBand = "under4" | "4to5" | "5to6" | "6to7" | "7to8" | "8plus";
 
 export interface ChoiceQuestion<T extends string> {
   id: string;
@@ -53,16 +44,14 @@ export interface ChoiceQuestion<T extends string> {
 export type ProfileAnswers = {
   ageBand: AgeBand;
   gender: Gender;
-  region: Region;
-  sleepHours: SleepHoursBand;
 };
 
-export type LikertAnswers = Record<string, LikertValue>;
+export type SymptomAnswers = Record<string, YesNo>;
 
 export interface QuizSubmission {
   localId: string;
   profile: ProfileAnswers;
-  answers: LikertAnswers;
+  answers: SymptomAnswers;
 }
 
 export type SleepType =
@@ -117,11 +106,8 @@ export interface AdminStats {
   averageScore: number;
   byAgeBand: { label: string; count: number }[];
   byGender: { label: string; count: number }[];
-  byRegion: { label: string; count: number }[];
   bySleepType: { label: string; count: number }[];
-  bySleepHours: { label: string; count: number }[];
   nocturiaRiskRate: number;
-  averageSleepHoursLabel: string;
   bookingClickRate: number;
   lineClickRate: number;
   improvementRate: number;
@@ -129,4 +115,3 @@ export interface AdminStats {
   generatedAt: string;
   dataWindowNote: string;
 }
-

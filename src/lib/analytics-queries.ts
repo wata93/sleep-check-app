@@ -12,8 +12,6 @@ function labelMap<T extends string>(choices: { value: T; label: string }[]): Rec
 
 const AGE_LABELS = labelMap(PROFILE_QUESTIONS.ageBand.choices);
 const GENDER_LABELS = labelMap(PROFILE_QUESTIONS.gender.choices);
-const REGION_LABELS = labelMap(PROFILE_QUESTIONS.region.choices);
-const SLEEP_HOURS_LABELS = labelMap(PROFILE_QUESTIONS.sleepHours.choices);
 
 function countBy<T extends string>(values: T[], labels: Record<string, string>): { label: string; count: number }[] {
   const counts = new Map<string, number>();
@@ -30,8 +28,6 @@ interface ResultRow {
   local_id: string;
   age_band: string;
   gender: string;
-  region: string;
-  sleep_hours_band: string;
   total_score: number;
   sleep_type: string;
   category_scores: Record<string, number>;
@@ -56,7 +52,7 @@ export async function getAdminStats(): Promise<AdminStats> {
 
   const { data: results, error: resultsError } = await client
     .from("sleep_check_results")
-    .select("id, created_at, local_id, age_band, gender, region, sleep_hours_band, total_score, sleep_type, category_scores")
+    .select("id, created_at, local_id, age_band, gender, total_score, sleep_type, category_scores")
     .order("created_at", { ascending: false })
     .limit(MAX_ROWS);
 
@@ -78,19 +74,10 @@ export async function getAdminStats(): Promise<AdminStats> {
 
   const byAgeBand = countBy(rows.map((r) => r.age_band), AGE_LABELS);
   const byGender = countBy(rows.map((r) => r.gender), GENDER_LABELS);
-  const byRegion = countBy(rows.map((r) => r.region), REGION_LABELS);
   const bySleepType = countBy(rows.map((r) => r.sleep_type), SLEEP_TYPE_LABELS);
-  const bySleepHours = countBy(rows.map((r) => r.sleep_hours_band), SLEEP_HOURS_LABELS);
 
   const nocturiaRiskCount = rows.filter((r) => (r.category_scores?.nocturia ?? 100) < 50).length;
   const nocturiaRiskRate = Math.round((nocturiaRiskCount / totalResponses) * 1000) / 10;
-
-  const sleepHoursCounts = new Map<string, number>();
-  rows.forEach((r) => sleepHoursCounts.set(r.sleep_hours_band, (sleepHoursCounts.get(r.sleep_hours_band) ?? 0) + 1));
-  const mostCommonSleepHours = Array.from(sleepHoursCounts.entries()).sort((a, b) => b[1] - a[1])[0]?.[0];
-  const averageSleepHoursLabel = mostCommonSleepHours
-    ? SLEEP_HOURS_LABELS[mostCommonSleepHours as keyof typeof SLEEP_HOURS_LABELS] ?? "不明"
-    : "不明";
 
   const resultIdsWithClick = (targets: string[]) =>
     new Set(clickRows.filter((c) => targets.includes(c.target)).map((c) => c.result_id));
@@ -134,11 +121,8 @@ export async function getAdminStats(): Promise<AdminStats> {
     averageScore,
     byAgeBand,
     byGender,
-    byRegion,
     bySleepType,
-    bySleepHours,
     nocturiaRiskRate,
-    averageSleepHoursLabel,
     bookingClickRate,
     lineClickRate,
     improvementRate,
@@ -154,11 +138,8 @@ function emptyStats(note: string): AdminStats {
     averageScore: 0,
     byAgeBand: [],
     byGender: [],
-    byRegion: [],
     bySleepType: [],
-    bySleepHours: [],
     nocturiaRiskRate: 0,
-    averageSleepHoursLabel: "不明",
     bookingClickRate: 0,
     lineClickRate: 0,
     improvementRate: 0,

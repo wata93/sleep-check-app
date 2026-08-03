@@ -36,7 +36,7 @@ export default function TopPage() {
             </LinkButton>
           </div>
           <p className="text-xs text-navy-200">
-            全{TOTAL_QUESTION_COUNT}問・所要時間 約30秒〜2分・完全無料・登録不要
+            全{TOTAL_QUESTION_COUNT}問・所要時間 約30秒・完全無料・登録不要
           </p>
         </div>
       </section>

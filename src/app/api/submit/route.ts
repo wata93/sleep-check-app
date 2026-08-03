@@ -2,25 +2,20 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { scoreQuiz } from "@/lib/scoring";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import type { LikertAnswers, ProfileAnswers } from "@/lib/types";
+import type { ProfileAnswers, SymptomAnswers } from "@/lib/types";
 
 export const runtime = "nodejs";
 
 interface SubmitBody {
   localId: string;
   profile: ProfileAnswers;
-  answers: LikertAnswers;
+  answers: SymptomAnswers;
 }
 
 function isValidProfile(profile: unknown): profile is ProfileAnswers {
   if (!profile || typeof profile !== "object") return false;
   const p = profile as Record<string, unknown>;
-  return (
-    typeof p.ageBand === "string" &&
-    typeof p.gender === "string" &&
-    typeof p.region === "string" &&
-    typeof p.sleepHours === "string"
-  );
+  return typeof p.ageBand === "string" && typeof p.gender === "string";
 }
 
 export async function POST(request: Request) {
@@ -45,8 +40,6 @@ export async function POST(request: Request) {
       local_id: body.localId,
       age_band: body.profile.ageBand,
       gender: body.profile.gender,
-      region: body.profile.region,
-      sleep_hours_band: body.profile.sleepHours,
       total_score: result.totalScore,
       sleep_age: result.sleepAge,
       sleep_type: result.sleepType,

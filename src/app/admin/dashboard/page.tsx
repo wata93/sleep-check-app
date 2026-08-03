@@ -59,11 +59,10 @@ export default function AdminDashboardPage() {
           <>
             <p className="text-xs text-navy-400">{stats.dataWindowNote}</p>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <StatCard label="回答人数" value={`${stats.totalResponses}`} sub="人" />
               <StatCard label="平均点" value={`${stats.averageScore}`} sub="点 / 100点満点" />
               <StatCard label="夜間頻尿割合" value={`${stats.nocturiaRiskRate}%`} sub="要注意レベル以上" />
-              <StatCard label="平均睡眠時間帯" value={stats.averageSleepHoursLabel} sub="最頻値" />
             </div>
 
             <Card>
@@ -96,16 +95,8 @@ export default function AdminDashboardPage() {
                 <PieBreakdown data={stats.byGender} />
               </Card>
               <Card>
-                <h2 className="font-bold text-navy-900 mb-2">地域別</h2>
-                <PieBreakdown data={stats.byRegion} />
-              </Card>
-              <Card>
                 <h2 className="font-bold text-navy-900 mb-2">睡眠タイプ割合</h2>
                 <PieBreakdown data={stats.bySleepType} />
-              </Card>
-              <Card>
-                <h2 className="font-bold text-navy-900 mb-2">平均睡眠時間の分布</h2>
-                <PieBreakdown data={stats.bySleepHours} />
               </Card>
             </div>
           </>

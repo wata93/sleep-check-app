@@ -13,8 +13,6 @@ create table if not exists public.sleep_check_results (
   local_id text not null,               -- 端末側で発行する匿名ID（再診断の履歴突合に使用。個人情報ではない）
   age_band text not null,
   gender text not null,
-  region text not null,
-  sleep_hours_band text not null,
   total_score int not null,
   sleep_age int not null,
   sleep_type text not null,
@@ -60,3 +58,13 @@ create policy "anon can insert click events" on public.click_events
 
 -- 集計・CSV出力はService Role Key（サーバー専用）からのみ行うため、
 -- anon向けの一覧取得ポリシーは意図的に設定していません。
+
+-- ============================================================
+-- マイグレーション: 質問を5問(はい/いいえ)形式に変更したことに伴い、
+-- 「地域」「平均睡眠時間」の質問を廃止しました。
+-- 以前のバージョンで既に sleep_check_results テーブルを作成済みの場合は、
+-- 以下を追加で実行して region / sleep_hours_band 列を削除してください。
+-- （新規にテーブルを作成する場合は不要です）
+-- ============================================================
+alter table public.sleep_check_results drop column if exists region;
+alter table public.sleep_check_results drop column if exists sleep_hours_band;

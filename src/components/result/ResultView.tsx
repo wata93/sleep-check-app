@@ -49,8 +49,6 @@ export function ResultView() {
         const profile: ProfileAnswers = {
           ageBand: data.age_band,
           gender: data.gender,
-          region: data.region,
-          sleepHours: data.sleep_hours_band,
         };
         // 保存済みの生回答から採点ロジックを再実行し、状態文言・アドバイス等を完全に復元する
         const recomputed = scoreQuiz(profile, data.answers);

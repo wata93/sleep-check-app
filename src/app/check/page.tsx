@@ -4,33 +4,33 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionCard } from "@/components/quiz/QuestionCard";
 import { ChoiceOptions } from "@/components/quiz/ChoiceOptions";
-import { LikertOptions } from "@/components/quiz/LikertOptions";
-import { LIKERT_QUESTIONS, PROFILE_QUESTION_LIST } from "@/lib/questions";
-import type { LikertAnswers, LikertValue, ProfileAnswers } from "@/lib/types";
+import { YesNoOptions } from "@/components/quiz/YesNoOptions";
+import { PROFILE_QUESTION_LIST, SYMPTOM_QUESTIONS } from "@/lib/questions";
+import type { ProfileAnswers, SymptomAnswers } from "@/lib/types";
 import { getOrCreateLocalId, saveResultToLocalHistory } from "@/lib/local-history";
 
 type FlowItem =
   | { kind: "profile"; index: number; question: (typeof PROFILE_QUESTION_LIST)[number] }
-  | { kind: "likert"; index: number; question: (typeof LIKERT_QUESTIONS)[number] };
+  | { kind: "symptom"; index: number; question: (typeof SYMPTOM_QUESTIONS)[number] };
 
 export default function CheckPage() {
   const router = useRouter();
   const flow = useMemo<FlowItem[]>(() => {
     const profileItems: FlowItem[] = PROFILE_QUESTION_LIST.map((q, i) => ({ kind: "profile", index: i, question: q }));
-    const likertItems: FlowItem[] = LIKERT_QUESTIONS.map((q, i) => ({ kind: "likert", index: i, question: q }));
-    return [...profileItems, ...likertItems];
+    const symptomItems: FlowItem[] = SYMPTOM_QUESTIONS.map((q, i) => ({ kind: "symptom", index: i, question: q }));
+    return [...profileItems, ...symptomItems];
   }, []);
 
   const [step, setStep] = useState(0);
   const [profileAnswers, setProfileAnswers] = useState<Partial<ProfileAnswers>>({});
-  const [likertAnswers, setLikertAnswers] = useState<LikertAnswers>({});
+  const [symptomAnswers, setSymptomAnswers] = useState<SymptomAnswers>({});
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const current = flow[step];
   const total = flow.length;
 
-  async function submitQuiz(finalProfile: ProfileAnswers, finalAnswers: LikertAnswers) {
+  async function submitQuiz(finalProfile: ProfileAnswers, finalAnswers: SymptomAnswers) {
     setSubmitting(true);
     setError(null);
     try {
@@ -50,9 +50,9 @@ export default function CheckPage() {
     }
   }
 
-  function goNext(updatedProfile: Partial<ProfileAnswers>, updatedLikert: LikertAnswers) {
+  function goNext(updatedProfile: Partial<ProfileAnswers>, updatedSymptoms: SymptomAnswers) {
     if (step + 1 >= total) {
-      void submitQuiz(updatedProfile as ProfileAnswers, updatedLikert);
+      void submitQuiz(updatedProfile as ProfileAnswers, updatedSymptoms);
       return;
     }
     setStep((s) => s + 1);
@@ -61,13 +61,13 @@ export default function CheckPage() {
   function handleProfileSelect(id: string, value: string) {
     const updated = { ...profileAnswers, [id]: value } as Partial<ProfileAnswers>;
     setProfileAnswers(updated);
-    setTimeout(() => goNext(updated, likertAnswers), 220);
+    setTimeout(() => goNext(updated, symptomAnswers), 200);
   }
 
-  function handleLikertSelect(id: string, value: LikertValue) {
-    const updated = { ...likertAnswers, [id]: value };
-    setLikertAnswers(updated);
-    setTimeout(() => goNext(profileAnswers, updated), 220);
+  function handleSymptomSelect(id: string, value: boolean) {
+    const updated = { ...symptomAnswers, [id]: value };
+    setSymptomAnswers(updated);
+    setTimeout(() => goNext(profileAnswers, updated), 200);
   }
 
   function handleBack() {
@@ -107,9 +107,9 @@ export default function CheckPage() {
             onSelect={(value) => handleProfileSelect(current.question.id, value)}
           />
         ) : (
-          <LikertOptions
-            value={likertAnswers[current.question.id]}
-            onSelect={(value) => handleLikertSelect(current.question.id, value)}
+          <YesNoOptions
+            value={symptomAnswers[current.question.id]}
+            onSelect={(value) => handleSymptomSelect(current.question.id, value)}
           />
         )}
       </QuestionCard>

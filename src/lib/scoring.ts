@@ -1,31 +1,25 @@
-import { LIKERT_QUESTIONS } from "./questions";
+import { SYMPTOM_QUESTIONS } from "./questions";
 import type {
   AgeBand,
   Category,
   CategoryResult,
-  LikertAnswers,
   ProfileAnswers,
   ResultTier,
   ScoringResult,
   SleepType,
+  SymptomAnswers,
 } from "./types";
 import { CATEGORY_LABELS } from "./types";
 
 /**
  * 採点基準の変更方法:
- * - カテゴリの重要度は `CATEGORY_WEIGHTS` を編集してください（合計が1.0になるようにしてください）。
  * - 総合スコアの評価帯（ご案内文言の切り替え）は `TIER_THRESHOLDS` を編集してください。
  * - 各カテゴリの状態文言・アドバイスは `CATEGORY_TEXT` を編集してください。
  * - 睡眠年齢の補正幅は `SLEEP_AGE_ADJUSTMENT` を編集してください。
+ * - 各設問の配点・レーダーチャートへの影響度は `src/lib/questions.ts` の `SYMPTOM_QUESTIONS` を編集してください。
  */
 
-export const CATEGORY_WEIGHTS: Record<Category, number> = {
-  quality: 0.3,
-  autonomic: 0.2,
-  stress: 0.2,
-  brain: 0.15,
-  nocturia: 0.15,
-};
+const ALL_CATEGORIES: Category[] = ["quality", "autonomic", "stress", "brain", "nocturia"];
 
 const TIER_THRESHOLDS: { min: number; tier: ResultTier }[] = [
   { min: 90, tier: "excellent" },
@@ -67,7 +61,7 @@ const CATEGORY_TEXT: Record<Category, CategoryTextSet> = {
     },
     bad: {
       status: "要改善",
-      description: "入眠困難や中途覚醒など、睡眠の質に大きな課題があります。",
+      description: "眠りが浅く、熟眠感が乏しいなど睡眠の質に大きな課題があります。",
       advice: "睡眠整体で筋肉の緊張をほぐし、深い眠りに入りやすい身体づくりをおすすめします。",
     },
   },
@@ -79,12 +73,12 @@ const CATEGORY_TEXT: Record<Category, CategoryTextSet> = {
     },
     mid: {
       status: "やや乱れ気味",
-      description: "冷えやほてり、動悸など自律神経の乱れのサインが見られます。",
+      description: "肩こりや首こりなど、自律神経の乱れのサインが見られます。",
       advice: "首・背中周りの緊張をほぐすストレッチや入浴で、副交感神経を優位にしましょう。",
     },
     bad: {
       status: "乱れが強い",
-      description: "自律神経の乱れが睡眠に影響している可能性が高い状態です。",
+      description: "身体の緊張・自律神経の乱れが睡眠に影響している可能性が高い状態です。",
       advice: "睡眠整体による背骨・骨盤の調整で、自律神経のバランスを整えることをおすすめします。",
     },
   },
@@ -147,28 +141,13 @@ const CATEGORY_TEXT: Record<Category, CategoryTextSet> = {
 };
 
 const PROBLEM_PHRASES: Record<string, string> = {
-  q_sleep_onset: "寝つきの悪さ（入眠困難）",
+  q_no_deep_sleep: "眠っても疲れが取れない（熟眠感の欠如）",
   q_night_waking: "夜中に何度も目が覚める（中途覚醒）",
-  q_early_waking: "早朝に目が覚めてしまう（早朝覚醒）",
-  q_no_deep_sleep: "眠りが浅く熟眠感が乏しい",
-  q_daytime_sleepiness: "日中の強い眠気",
-  q_cold_hot: "手足の冷え・ほてり",
-  q_palpitation: "動悸・息苦しさ",
-  q_dizziness: "立ちくらみ・めまい",
-  q_low_mood: "気分の落ち込み",
-  q_stress_feeling: "慢性的なストレス",
-  q_low_motivation: "意欲の低下",
-  q_concentration: "集中力の低下",
-  q_judgement: "判断力の低下",
-  q_eye_fatigue: "目の疲れ・頭の重さ",
-  q_night_toilet: "夜間頻尿",
-  q_night_fluid: "就寝前の水分摂取過多",
+  q_daytime_sleepiness: "日中の強い眠気・集中力低下",
+  q_body_tension: "肩こり・首こり・身体の緊張",
+  q_stress: "ストレス・気分の落ち込み",
 };
 
-/**
- * 女性の場合、睡眠の質の低下と体重増加・肥満リスク、および美容面への影響が指摘されている点を踏まえた補足文言。
- * 「睡眠の質」カテゴリがmid/badの場合にのみ、性別が女性の回答者に対して説明文へ追記します。
- */
 const FEMALE_QUALITY_RISK_NOTE =
   "また女性の場合、睡眠の質の低下はホルモンバランスの乱れを通じて、体重増加・肥満のリスクにも関わる可能性があると言われています。" +
   "さらに睡眠中は肌のターンオーバーや修復が行われるため、質の低下は肌荒れ・くすみなど美容面にも影響すると言われています。";
@@ -187,20 +166,29 @@ function categoryTier(score: number): "good" | "mid" | "bad" {
   return "bad";
 }
 
-function computeCategoryScore(category: Category, answers: LikertAnswers): number {
-  const questions = LIKERT_QUESTIONS.filter((q) => q.category === category);
-  if (questions.length === 0) return 100;
-  const sum = questions.reduce((acc, q) => acc + (answers[q.id] ?? 0), 0);
-  const avg = sum / questions.length;
-  return Math.round((100 - (avg / 4) * 100) * 10) / 10;
+function computeCategoryScores(answers: SymptomAnswers): Record<Category, number> {
+  const deductions: Record<Category, number> = { quality: 0, autonomic: 0, stress: 0, brain: 0, nocturia: 0 };
+  for (const q of SYMPTOM_QUESTIONS) {
+    if (answers[q.id] !== true) continue;
+    for (const cat of ALL_CATEGORIES) {
+      const impact = q.impact[cat];
+      if (impact) deductions[cat] += impact;
+    }
+  }
+  const scores = {} as Record<Category, number>;
+  for (const cat of ALL_CATEGORIES) {
+    scores[cat] = Math.max(0, Math.min(100, 100 - deductions[cat]));
+  }
+  return scores;
 }
 
-function computeTotalScore(categoryScores: Record<Category, number>): number {
+/** 5問の重み付き回答から総合スコア（100点満点）を算出。「いいえ」の設問の配点を積み上げる方式 */
+function computeTotalScore(answers: SymptomAnswers): number {
   let total = 0;
-  (Object.keys(CATEGORY_WEIGHTS) as Category[]).forEach((cat) => {
-    total += categoryScores[cat] * CATEGORY_WEIGHTS[cat];
-  });
-  return Math.round(total);
+  for (const q of SYMPTOM_QUESTIONS) {
+    if (answers[q.id] !== true) total += q.weight;
+  }
+  return Math.max(0, Math.min(100, total));
 }
 
 function tierFromScore(score: number): ResultTier {
@@ -223,21 +211,16 @@ function determineSleepType(categories: CategoryResult[], totalScore: number): S
   return SLEEP_TYPE_BY_CATEGORY[worst.category];
 }
 
-function getTopProblems(answers: LikertAnswers): string[] {
-  const sorted = LIKERT_QUESTIONS.slice().sort((a, b) => (answers[b.id] ?? 0) - (answers[a.id] ?? 0));
-  return sorted
+function getTopProblems(answers: SymptomAnswers): string[] {
+  return SYMPTOM_QUESTIONS.filter((q) => answers[q.id] === true)
     .slice(0, 3)
-    .filter((q) => (answers[q.id] ?? 0) >= 1)
     .map((q) => PROBLEM_PHRASES[q.id] ?? q.text);
 }
 
-export function scoreQuiz(profile: ProfileAnswers, answers: LikertAnswers): ScoringResult {
-  const categoryScores = {} as Record<Category, number>;
-  (Object.keys(CATEGORY_WEIGHTS) as Category[]).forEach((cat) => {
-    categoryScores[cat] = computeCategoryScore(cat, answers);
-  });
+export function scoreQuiz(profile: ProfileAnswers, answers: SymptomAnswers): ScoringResult {
+  const categoryScores = computeCategoryScores(answers);
 
-  const categories: CategoryResult[] = (Object.keys(CATEGORY_WEIGHTS) as Category[]).map((cat) => {
+  const categories: CategoryResult[] = ALL_CATEGORIES.map((cat) => {
     const score = categoryScores[cat];
     const tier = categoryTier(score);
     const text = CATEGORY_TEXT[cat][tier];
@@ -251,7 +234,7 @@ export function scoreQuiz(profile: ProfileAnswers, answers: LikertAnswers): Scor
     };
   });
 
-  const totalScore = computeTotalScore(categoryScores);
+  const totalScore = computeTotalScore(answers);
   const { sleepAge, actualAgeEstimate } = computeSleepAge(profile.ageBand, totalScore);
   const sleepType = determineSleepType(categories, totalScore);
   const topProblems = getTopProblems(answers);
