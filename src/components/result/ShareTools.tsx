@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { APP_NAME, SITE_URL } from "@/lib/constants";
+import { SITE_URL, SLEEP_APP_NAME } from "@/lib/constants";
 import type { ScoringResult } from "@/lib/types";
 import { SLEEP_TYPE_LABELS } from "@/lib/types";
 
@@ -12,8 +12,8 @@ interface ShareToolsProps {
 
 export function ShareTools({ resultId, result }: ShareToolsProps) {
   const [copied, setCopied] = useState(false);
-  const shareUrl = `${SITE_URL}/result?id=${resultId}`;
-  const shareText = `【${APP_NAME}】睡眠スコア${result.totalScore}点（${SLEEP_TYPE_LABELS[result.sleepType]}）でした。あなたも診断してみませんか？\n${shareUrl}`;
+  const shareUrl = `${SITE_URL}/result?id=${resultId}&type=sleep`;
+  const shareText = `【${SLEEP_APP_NAME}】睡眠スコア${result.totalScore}点（${SLEEP_TYPE_LABELS[result.sleepType]}）でした。あなたも診断してみませんか？\n${shareUrl}`;
 
   function handlePrint() {
     window.print();
@@ -24,7 +24,7 @@ export function ShareTools({ resultId, result }: ShareToolsProps) {
   }
 
   function handleEmailShare() {
-    const subject = encodeURIComponent(`${APP_NAME} 診断結果`);
+    const subject = encodeURIComponent(`${SLEEP_APP_NAME} 診断結果`);
     const body = encodeURIComponent(shareText);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   }
@@ -32,7 +32,7 @@ export function ShareTools({ resultId, result }: ShareToolsProps) {
   async function handleSnsShare() {
     if (typeof navigator !== "undefined" && "share" in navigator) {
       try {
-        await navigator.share({ title: APP_NAME, text: shareText, url: shareUrl });
+        await navigator.share({ title: SLEEP_APP_NAME, text: shareText, url: shareUrl });
         return;
       } catch {
         // ユーザーがキャンセルした場合等は何もしない

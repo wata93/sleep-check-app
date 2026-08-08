@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ResultView } from "@/components/result/ResultView";
+import { ResultRouter } from "@/components/result/ResultRouter";
 
 export const metadata: Metadata = {
   title: "診断結果",
@@ -16,7 +16,7 @@ export default function ResultPage() {
         </main>
       }
     >
-      <ResultView />
+      <ResultRouter />
     </Suspense>
   );
 }

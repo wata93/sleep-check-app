@@ -8,9 +8,13 @@ export const CLINIC_HOURS = process.env.NEXT_PUBLIC_CLINIC_HOURS ?? "平日9:00-
 export const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? "https://airrsv.net/ohharamura-yoyaku/calendar";
 export const TEL_HREF = `tel:${CLINIC_TEL.replace(/-/g, "")}`;
 
-export const APP_NAME = "30秒でわかる睡眠チェック";
+export const APP_NAME = "身体の悩み診断";
 export const APP_DESCRIPTION =
-  "あなたの睡眠は100点満点中何点？アテネ不眠尺度(AIS)やWHO-5などの医学的指標を参考にした簡単な質問に答えるだけで、睡眠の質・自律神経・ストレス・脳疲労・夜間頻尿リスクを無料でチェックできます。";
+  "5つの質問に答えるだけで、今のあなたにおすすめのケアが分かる無料セルフチェックです。" +
+  "睡眠・肩こり腰痛・猫背姿勢・足のお悩み・ダイエット・美容の中から気になる項目を選んで、30秒〜1分で簡単にチェックできます。";
+
+/** 睡眠チェックの旧アプリ名。共有テキスト等、睡眠チェック固有の文言でのみ使用します。 */
+export const SLEEP_APP_NAME = "30秒でわかる睡眠チェック";
 
 export interface TierCopy {
   stars: number;

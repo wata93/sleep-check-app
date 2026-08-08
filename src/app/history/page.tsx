@@ -4,14 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { LinkButton } from "@/components/ui/Button";
-import { getLocalHistory } from "@/lib/local-history";
-import { SLEEP_TYPE_LABELS, type StoredResult } from "@/lib/types";
+import { getAllLocalHistory, type UnifiedHistoryEntry } from "@/lib/local-history";
 
 export default function HistoryPage() {
-  const [history, setHistory] = useState<StoredResult[] | null>(null);
+  const [history, setHistory] = useState<UnifiedHistoryEntry[] | null>(null);
 
   useEffect(() => {
-    setHistory(getLocalHistory());
+    setHistory(getAllLocalHistory());
   }, []);
 
   return (
@@ -31,24 +30,26 @@ export default function HistoryPage() {
         )}
 
         {history?.map((item) => (
-          <Link key={item.id} href={`/result?id=${item.id}`}>
+          <Link key={`${item.diagnosisId}-${item.id}`} href={item.href}>
             <Card className="!p-4 flex items-center justify-between hover:border-skyfog-400 border border-transparent transition-colors">
               <div>
                 <p className="text-xs text-navy-400">
                   {new Date(item.createdAt).toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" })}
+                  {" ・ "}
+                  {item.title}
                 </p>
-                <p className="font-bold text-navy-900">{SLEEP_TYPE_LABELS[item.sleepType]}</p>
+                <p className="font-bold text-navy-900">{item.typeLabel}</p>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-extrabold text-navy-800">{item.totalScore}</p>
+                <p className="text-2xl font-extrabold text-navy-800">{item.score}</p>
                 <p className="text-[11px] text-navy-400">点</p>
               </div>
             </Card>
           </Link>
         ))}
 
-        <LinkButton href="/check" variant="primary" fullWidth>
-          新しく診断する
+        <LinkButton href="/select" variant="primary" fullWidth>
+          新しく身体チェックをする
         </LinkButton>
       </div>
     </main>
