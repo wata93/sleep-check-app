@@ -157,13 +157,13 @@ export function ResultView() {
           <ShareTools resultId={result.id} result={result} />
         </div>
 
-        <div className="no-print flex flex-col gap-3 mt-2">
+        <div className="no-print flex flex-col items-center gap-3 mt-2">
           <LinkButton href="/history" variant="ghost" fullWidth>
             過去の結果履歴を見る
           </LinkButton>
-          <LinkButton href="/check" variant="outline" fullWidth>
-            もう一度チェックする
-          </LinkButton>
+          <a href="/select" className="text-sm font-medium text-navy-400 hover:text-navy-600 mt-1">
+            別の身体チェックをする
+          </a>
         </div>
       </div>
     </main>

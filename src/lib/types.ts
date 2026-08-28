@@ -114,4 +114,16 @@ export interface AdminStats {
   monthlyTrend: { month: string; count: number; averageScore: number }[];
   generatedAt: string;
   dataWindowNote: string;
+  /** 診断種類別の利用人数（睡眠チェック＋ボディチェック5診断を合算） */
+  byDiagnosis: { label: string; count: number }[];
+  /** おすすめメニュー別の人数（一番おすすめされた回数） */
+  byMenu: { label: string; count: number }[];
+  /** 診断×メニューごとの予約ボタンクリック数・クリック率 */
+  menuClicks: {
+    diagnosisLabel: string;
+    menuLabel: string;
+    diagnosisCount: number;
+    clicks: number;
+    clickRate: number;
+  }[];
 }

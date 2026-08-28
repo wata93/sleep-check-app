@@ -11,6 +11,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const resultId = typeof body?.resultId === "string" ? body.resultId : null;
     const target = body?.target as ClickTarget;
+    const diagnosisId = typeof body?.diagnosisId === "string" ? body.diagnosisId : null;
+    const menuKey = typeof body?.menuKey === "string" ? body.menuKey : null;
 
     if (!resultId || !VALID_TARGETS.includes(target)) {
       return NextResponse.json({ error: "不正なリクエストです。" }, { status: 400 });
@@ -18,7 +20,7 @@ export async function POST(request: Request) {
 
     const client = getSupabaseServerClient();
     if (client) {
-      await client.from("click_events").insert({ result_id: resultId, target });
+      await client.from("click_events").insert({ result_id: resultId, target, diagnosis_id: diagnosisId, menu_key: menuKey });
     }
     return NextResponse.json({ ok: true });
   } catch {
