@@ -6,7 +6,7 @@ import { DIAGNOSIS_MENU_ITEMS } from "@/lib/bodycheck/registry";
 
 export const metadata: Metadata = {
   title: "身体チェックを選ぶ",
-  description: "気になる身体の悩みを選んで、5つの質問に答えるだけの簡単セルフチェックを始めましょう。",
+  description: "気になる身体の悩みを選んで、簡単な質問に答えるだけのセルフチェックを始めましょう。",
 };
 
 export default function SelectPage() {
@@ -20,7 +20,8 @@ export default function SelectPage() {
           <h1 className="text-xl sm:text-2xl font-extrabold leading-snug">どこが気になりますか？</h1>
           <p className="text-sm text-navy-100 leading-relaxed">
             気になる項目を1つ選んでください。
-            <br />5つの質問に答えるだけで結果が分かります。
+            <br />
+            簡単な質問に答えるだけで結果が分かります。
           </p>
         </div>
       </section>

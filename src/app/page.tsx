@@ -25,11 +25,6 @@ export default function TopPage() {
             <br />
             どこから整える？
           </h1>
-          <p className="text-base sm:text-lg text-navy-100 leading-relaxed">
-            5つの質問に答えるだけで、
-            <br />
-            今のあなたにおすすめのケアが分かります。
-          </p>
           <div className="w-full pt-2">
             <LinkButton href="/select" variant="primary" fullWidth className="!bg-white !text-navy-900 hover:!bg-skyfog-50">
               身体チェックを始める

@@ -1,7 +1,7 @@
 {
   "name": "身体の悩み診断",
   "short_name": "身体診断",
-  "description": "5つの質問に答えるだけで、あなたにおすすめのケアが分かる無料セルフチェック",
+  "description": "簡単な質問に答えるだけで、あなたにおすすめのケアが分かる無料セルフチェック",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

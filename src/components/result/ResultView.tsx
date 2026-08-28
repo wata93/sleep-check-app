@@ -158,9 +158,6 @@ export function ResultView() {
         </div>
 
         <div className="no-print flex flex-col items-center gap-3 mt-2">
-          <LinkButton href="/check?type=sleep" variant="outline" fullWidth>
-            もう一度チェックする
-          </LinkButton>
           <LinkButton href="/history" variant="ghost" fullWidth>
             過去の結果履歴を見る
           </LinkButton>

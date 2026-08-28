@@ -43,9 +43,10 @@ export function CtaButtons({ resultId, ctaLabel }: CtaButtonsProps) {
       <a
         href={TEL_HREF}
         onClick={() => trackClick(resultId, "tel", "sleep", "sleepSeitai")}
-        className="inline-flex items-center justify-center gap-2 rounded-full font-bold text-center min-h-[3.25rem] px-6 py-4 text-base bg-white text-navy-800 border-2 border-navy-100 shadow-card hover:border-navy-300 active:scale-95 transition-all"
+        className="flex flex-col items-center justify-center gap-0.5 rounded-full font-bold text-center min-h-[3.25rem] px-6 py-3 bg-white text-navy-800 border-2 border-navy-100 shadow-card hover:border-navy-300 active:scale-95 transition-all"
       >
-        📞 {CLINIC_TEL}
+        <span className="text-sm">📞 お問い合わせ、ご予約はこちら</span>
+        <span className="text-base">{CLINIC_TEL}</span>
       </a>
     </div>
   );

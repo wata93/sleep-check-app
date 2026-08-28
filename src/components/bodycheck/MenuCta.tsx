@@ -33,9 +33,10 @@ export function PrimaryMenuCta({ resultId, diagnosisId, menuKey }: MenuCtaProps)
       <a
         href={TEL_HREF}
         onClick={() => trackClick(resultId, "tel", diagnosisId, menuKey)}
-        className="inline-flex items-center justify-center gap-2 rounded-full font-bold text-center min-h-[3.25rem] px-6 py-4 text-base bg-white text-navy-800 border-2 border-navy-100 shadow-card hover:border-navy-300 active:scale-95 transition-all"
+        className="flex flex-col items-center justify-center gap-0.5 rounded-full font-bold text-center min-h-[3.25rem] px-6 py-3 bg-white text-navy-800 border-2 border-navy-100 shadow-card hover:border-navy-300 active:scale-95 transition-all"
       >
-        📞 {CLINIC_TEL}
+        <span className="text-sm">📞 お問い合わせ、ご予約はこちら</span>
+        <span className="text-base">{CLINIC_TEL}</span>
       </a>
     </div>
   );
@@ -44,7 +45,6 @@ export function PrimaryMenuCta({ resultId, diagnosisId, menuKey }: MenuCtaProps)
 /** 関連メニュー（小さく表示。強く売り込まないよう控えめなデザイン） */
 export function SecondaryMenuCard({ resultId, diagnosisId, menuKey }: MenuCtaProps) {
   const def = MENU_DEFS[menuKey];
-  const menu = useMenuConfig(menuKey, { bookingUrl: def.defaultBookingUrl, ctaLabel: def.defaultCtaLabel });
 
   return (
     <div className="flex items-center justify-between gap-3 rounded-2xl bg-skyfog-50 px-4 py-3">
@@ -52,16 +52,14 @@ export function SecondaryMenuCard({ resultId, diagnosisId, menuKey }: MenuCtaPro
         <p className="text-xs text-navy-400 mb-0.5">さらにこんなケアもおすすめです</p>
         <p className="text-sm font-bold text-navy-800">{def.name}</p>
       </div>
-      <button
-        type="button"
-        onClick={() => {
-          trackClick(resultId, "booking", diagnosisId, menuKey);
-          window.open(menu.bookingUrl, "_blank", "noopener,noreferrer");
-        }}
-        className="flex-none text-xs font-bold text-navy-600 border-2 border-navy-200 rounded-full px-4 py-2 hover:border-navy-400 active:scale-95 transition-all"
+      <a
+        href={TEL_HREF}
+        onClick={() => trackClick(resultId, "tel", diagnosisId, menuKey)}
+        className="flex-none flex flex-col items-center leading-tight text-xs font-bold text-navy-600 border-2 border-navy-200 rounded-full px-4 py-2 hover:border-navy-400 active:scale-95 transition-all"
       >
-        詳しく見る
-      </button>
+        <span>お問い合わせはこちら</span>
+        <span className="text-[11px] font-semibold text-navy-500">{CLINIC_TEL}</span>
+      </a>
     </div>
   );
 }
