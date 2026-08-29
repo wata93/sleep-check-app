@@ -51,7 +51,7 @@ export interface BodyCheckTypeCopy {
 
 export interface BodyCheckConfig {
   id: DiagnosisId;
-  /** メニュー選択画面のラベル 例:「肩・腰のつらさが気になる」 */
+  /** メニュー選択画面のラベル 例:「体の痛み・コリ・違和感が気になる」 */
   menuLabel: string;
   /** メニュー選択画面の小さいアイコン */
   icon: string;

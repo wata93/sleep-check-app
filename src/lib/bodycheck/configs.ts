@@ -13,7 +13,7 @@ import type { BodyCheckConfig } from "./types";
 
 export const SHOULDER_BACK_CONFIG: BodyCheckConfig = {
   id: "shoulderBack",
-  menuLabel: "肩・腰のつらさが気になる",
+  menuLabel: "体の痛み・コリ・違和感が気になる",
   icon: "💪",
   title: "肩こり・腰痛チェック",
   questions: [

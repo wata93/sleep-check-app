@@ -17,7 +17,7 @@ export default function SelectPage() {
         <div className="relative max-w-md mx-auto flex flex-col items-center text-center gap-3">
           <Logo size={40} />
           <p className="text-xs tracking-wide font-semibold text-skyfog-200 uppercase">{CLINIC_NAME}</p>
-          <h1 className="text-xl sm:text-2xl font-extrabold leading-snug">どこが気になりますか？</h1>
+          <h1 className="text-xl sm:text-2xl font-extrabold leading-snug">今、1番気になるお悩みは？</h1>
           <p className="text-sm text-navy-100 leading-relaxed">
             気になる項目を1つ選んでください。
             <br />

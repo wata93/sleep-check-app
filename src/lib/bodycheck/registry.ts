@@ -3,7 +3,7 @@ import type { BodyCheckConfig, DiagnosisId } from "./types";
 
 export interface DiagnosisMenuItem {
   id: DiagnosisId;
-  /** メニュー選択画面のラベル 例:「肩・腰のつらさが気になる」 */
+  /** メニュー選択画面のラベル 例:「体の痛み・コリ・違和感が気になる」 */
   menuLabel: string;
   /** チェック画面の見出し・履歴一覧などに使う短いタイトル */
   title: string;
